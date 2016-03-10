@@ -46,13 +46,13 @@ protected:
 
 TEST_F(BigramConverterTest, Convert) {
   for (size_t i = 0; i < inputs_.size(); i++) {
-    TokenString actual;
+    Segments actual;
     converter_->Convert(inputs_[i], &actual);
     const TokenString &expected = expected_outputs_[i];
 
     ASSERT_EQ(actual.size(), expected.size());
     for (size_t j = 0; j < actual.size(); j++) {
-      ASSERT_EQ(actual[j], expected[j]);
+      ASSERT_EQ(actual[j].token, expected[j]);
     }
   }
 }

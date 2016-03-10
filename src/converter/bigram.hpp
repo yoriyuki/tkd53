@@ -4,6 +4,7 @@
 #include <istream>
 
 #include "base/token.hpp"
+#include "converter_interface.hpp"
 
 
 namespace lime {
@@ -11,7 +12,6 @@ namespace converter {
 using namespace std;
 using namespace lime::base::token;
 
-typedef double Cost;
 
 class Bigram {
 public:
