@@ -95,14 +95,14 @@ bool HandleClient(const int client_socket, Engine *engine) {
       PerrorAndExit("ReadLine() failed.");
     }
 
-    cerr << "Request: (" << read_buffer << ")" << endl;
+    cerr << "Request: " << read_buffer <<  endl;
 
     string response_string = read_buffer;
     if (!HandleRequest(string(read_buffer), engine, &response_string)) {
       break;
     }
 
-    cerr << "Response: (" << response_string << ")" << endl;
+    cerr << "Response: " << response_string;
 
     if (!WriteLine(client_socket,
                    response_string.c_str(),
