@@ -1,0 +1,7 @@
+src/testing
+outputs
+tests/bin/
+tests/outputs
+*.o
+*~
+bin
