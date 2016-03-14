@@ -1,5 +1,5 @@
 TARGETS_DIR = ../../bin
-TARGETS = ${TARGETS_DIR}/stdin ${TARGETS_DIR}/unix_domain_socket
+TARGETS = ${TARGETS_DIR}/stdio ${TARGETS_DIR}/unix_domain_socket
 
 TESTS_INSTALL_DIR = ../../tests/bin/server
 GTEST_OBJ_DIR = ${TESTS_INSTALL_DIR}/../gtest
@@ -40,7 +40,7 @@ ${TESTS_INSTALL_DIR}:
 ../base/%.o: ../base/%.cpp
 	$(CXX) -o $@ -c $< $(CXXFLAGS)
 
-${TARGETS_DIR}/stdin:stdin.cpp ../engine/engine.o ../dictionary/map_dictionary.o ../converter/bigram.o ../converter/bigram_converter.o request.o
+${TARGETS_DIR}/stdio:stdio.cpp ../engine/engine.o ../dictionary/map_dictionary.o ../converter/bigram.o ../converter/bigram_converter.o request.o
 	$(CXX) -o $@ $^ $(CXXFLAGS)
 
 ${TARGETS_DIR}/unix_domain_socket:unix_domain_socket.cpp ../engine/engine.o ../dictionary/map_dictionary.o ../converter/bigram.o ../converter/bigram_converter.o request.o
