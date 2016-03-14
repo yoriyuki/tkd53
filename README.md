@@ -5,6 +5,7 @@ tkd53はテストフレームワークに[googletest](https://github.com/google/
 
 ### googletestをインストール
 ```
+$ mkdir -p src/testing
 $ cd src/testing
 $ git clone https://github.com/google/googletest
 $ cd googletest/googletest/build-aux
