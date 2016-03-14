@@ -3,7 +3,7 @@ TARGETS = ${TARGETS_DIR}/stdin ${TARGETS_DIR}/unix_domain_socket
 
 TESTS_INSTALL_DIR = ../../tests/bin/server
 GTEST_OBJ_DIR = ${TESTS_INSTALL_DIR}/../gtest
-GTEST_DIR = ../testing/gtest
+GTEST_DIR = ../testing/googletest/googletest
 GTEST_DEPS = ${GTEST_OBJ_DIR}/libgtest_main.a ${GTEST_OBJ_DIR}/libgtest.a
 
 CXX=g++
