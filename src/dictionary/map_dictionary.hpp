@@ -9,22 +9,22 @@
 
 namespace lime {
 namespace dictionary {
-using namespace std;
-using namespace lime::base::token;
-using namespace lime::base::kkci;
 
 class MapDictionary : public DictionaryInterface {
 public:
   MapDictionary();
 
-  const vector<Token> &Lookup(const KkciString &input) override;
+  virtual void Clear() override;
+
+  virtual void PushBack(Kkci kkci) override;
+
+  virtual void Lookup(vector<const Entry*> *entries) override;
 
   void Init(ifstream &&is);
 
 private:
-  map<KkciString, vector<Token> > mapping_;
-
-  const vector<Token> empty_vector_;
+  map<KkciString, vector<Entry> > mapping_;
+  KkciString key_;
 };
 
 } // dictionary

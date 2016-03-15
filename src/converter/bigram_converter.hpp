@@ -14,24 +14,18 @@ using namespace lime::base::token;
 using namespace lime::dictionary;
 
 
-struct Node {
-  const Token token;
-  const Cost cost_so_far;
-  const Node* const prev;
-};
-
-
 class BigramConverter : public ConverterInterface {
 public:
   BigramConverter(shared_ptr<Bigram> bigram,
                   shared_ptr<DictionaryInterface> dict);
 
-  void Convert(const KkciString &input, TokenString *output) override;
+  virtual void Convert(KkciString &input, Segments *output) override;
 
 private:
-  void InsertNode(const Token token,
-                  const vector<Node> &prev_columns,
-                  vector<Node> *columns);
+  void FindBestNode(const Token token,
+                    const vector<Node> &left_nodes,
+                    const Node** node,
+                    Cost* cost);
 
   shared_ptr<Bigram> bigram_;
   shared_ptr<DictionaryInterface> dict_;

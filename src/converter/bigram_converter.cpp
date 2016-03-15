@@ -13,62 +13,72 @@ BigramConverter::BigramConverter(shared_ptr<Bigram> bigram,
 }
 
 
-void BigramConverter::Convert(const KkciString &input, TokenString *output) {
+void BigramConverter::Convert(KkciString &input, Segments *output) {
+  dict_->Clear();  // 念のためClearする
   const size_t input_size = input.size();
-  vector<vector<Node> > table(input_size + 2);
+  vector<vector<Node> > table(input_size + 1);
 
-  table[0].push_back(Node({kBOS, 0, nullptr}));
+  table[0].push_back(Node({kBOS, nullptr, 0, nullptr}));
 
-  for (size_t end = 1; end <= input_size; end++) {
-    for (size_t start = 0; start < end; start++) {
-      const vector<Token> &token_set = dict_->Lookup(
-          input.substr(start, end - start));
+  for (size_t end_pos = 1; end_pos <= input_size; end_pos++) {
+    vector<const Entry*> entries;
+    dict_->PushBack(input[end_pos-1]);
+    dict_->Lookup(&entries);
 
-      if (token_set.empty()) {
-        InsertNode(kUNK, table[start], &table[end]);
-      } else {
-        for (size_t i = 0; i < token_set.size(); i++) {
-          InsertNode(token_set[i], table[start], &table[end]);
-        }
+    // end_posで終わる単語を辞書引きしてノードを挿入
+    for (vector<const Entry*>::const_iterator entry = entries.begin();
+         entry != entries.end(); ++entry) {
+      if (end_pos < (*entry)->kkci_string.length()) {
+        throw runtime_error("internal error");
       }
+      const vector<Node> &left_nodes =
+        table[end_pos - (*entry)->kkci_string.length()];
+      const Node *prev;
+      Cost cost_so_far;
+      FindBestNode((*entry)->token, left_nodes, &prev, &cost_so_far);
+      table[end_pos].push_back(
+          Node({(*entry)->token, prev, cost_so_far, *entry}));
+    }
+
+    // 未知語ノードを挿入
+    for (size_t i = 0; i < end_pos; i++) {
+      const Node *prev;
+      Cost cost_so_far;
+      FindBestNode(kUNK, table[i], &prev, &cost_so_far);
+      cost_so_far += 100;  // TODO: 未知語のコスト計算
+      table[end_pos].push_back(Node({kUNK, prev, cost_so_far, nullptr}));
     }
   }
 
-  InsertNode(kBOS, table[input_size], &table[input_size + 1]);
-
-  for (const Node *node =
-         &table[input_size + 1][0]; node != nullptr;  node = node->prev) {
-    if (node->token != kBOS) {
-      output->insert(0, 1, node->token);
-    }
+  const Node *prev;
+  Cost not_used_cost;  // 使わない
+  FindBestNode(kBOS, table[input_size], &prev, &not_used_cost);
+  for (const Node *node = prev; node->prev != nullptr; node = node->prev) {
+    output->push_front(*node);
   }
+
+  // Tear down
+  dict_->Clear();
 }
 
-void BigramConverter::InsertNode(const Token token,
-                                 const vector<Node> &prev_columns,
-                                 vector<Node> *columns) {
-  if (prev_columns.empty()) {
-    throw runtime_error("internal error");
-  }
-
-  Cost min_cost = 0;
-  const Node *min_cost_node = nullptr;
-  for (size_t i = 0; i < prev_columns.size(); i++) {
-    const Node &prev_node = prev_columns[i];
-    const Cost new_cost = prev_node.cost_so_far
-        + bigram_->GetCost(prev_node.token, token);
-    if (min_cost_node == nullptr || new_cost < min_cost) {
-      min_cost = new_cost;
-      min_cost_node = &prev_node;
+void BigramConverter::FindBestNode(const Token token,
+                                   const vector<Node> &left_nodes,
+                                   const Node** node,
+                                   Cost* cost) {
+  *cost = 0;
+  *node = nullptr;
+  for (vector<Node>::const_iterator left_node = left_nodes.begin();
+       left_node != left_nodes.end(); ++left_node) {
+    const Cost new_cost = left_node->cost_so_far
+      + bigram_->GetCost(left_node->token, token);
+    if (*node == nullptr || new_cost < *cost) {
+      *cost = new_cost;
+      *node = &(*left_node);
     }
   }
-
-  // TODO: 未知語
-  if (token == kUNK) {
-    min_cost += 100;
+  if (*node == nullptr) {
+    throw runtime_error("internal error");
   }
-
-  columns->push_back(Node({token, min_cost, min_cost_node}));
 }
 
 
