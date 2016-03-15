@@ -1,3 +1,6 @@
 [submodule "src/third_party/googletest"]
 	path = src/third_party/googletest
 	url = https://github.com/google/googletest
+[submodule "src/third_party/picojson"]
+	path = src/third_party/picojson
+	url = https://github.com/kazuho/picojson
