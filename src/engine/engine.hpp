@@ -2,7 +2,7 @@
 
 #include <memory>
 
-#include "converter/converter_interface.hpp"
+#include "converter/abstract_converter.hpp"
 
 namespace lime {
 namespace engine {
@@ -14,12 +14,12 @@ using namespace lime::converter;
 
 class Engine {
 public:
-  Engine(shared_ptr<ConverterInterface> converter);
+  Engine(shared_ptr<AbstractConverter> converter);
 
-  void Convert(const KkciString &input, TokenString *output);
+  void Convert(const KkciString &input, Segments *output);
 
 private:
-  shared_ptr<ConverterInterface> converter_;
+  shared_ptr<AbstractConverter> converter_;
 };
 
 
