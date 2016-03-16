@@ -1,12 +1,16 @@
 # tkd53: かな漢字変換システム
 
+## セットアップ
+```
+$ git submodule update --init
+```
+
 ## テストの実行
 tkd53はテストフレームワークに[googletest](https://github.com/google/googletest)を使用しています。
 
 ### googletestをインストール
 ```
-$ mkdir -p src/testing
-$ cd src/testing
+$ cd src/third_party
 $ git clone https://github.com/google/googletest
 $ cd googletest/googletest/build-aux
 $ cmake ../
