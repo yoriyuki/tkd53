@@ -1,4 +1,3 @@
-#include <iostream>
 #include <gtest/gtest.h>
 #include "dictionary/map_dictionary.hpp"
 #include "bigram_converter.hpp"
@@ -17,7 +16,8 @@ BigramConverter *CreateBigramConverter() {
   shared_ptr<MapDictionary> dict(new MapDictionary());
   dict->Init(ifstream("../../../var/WordKkci.text", ios::in));
 
-  return new BigramConverter(bigram, dict);
+  return new BigramConverter(
+      bigram, shared_ptr<LatticeBuilder>(new LatticeBuilder(dict)));
 }
 
 
@@ -47,12 +47,12 @@ protected:
 TEST_F(BigramConverterTest, Convert) {
   for (size_t i = 0; i < inputs_.size(); i++) {
     Segments actual;
-    converter_->Convert(inputs_[i], &actual);
+    converter_->Convert(inputs_[i], kBOS, kBOS, &actual);
     const TokenString &expected = expected_outputs_[i];
 
     ASSERT_EQ(actual.size(), expected.size());
     for (size_t j = 0; j < actual.size(); j++) {
-      ASSERT_EQ(actual[j].token, expected[j]);
+      ASSERT_EQ(actual[j]->token, expected[j]);
     }
   }
 }

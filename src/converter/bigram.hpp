@@ -4,7 +4,7 @@
 #include <istream>
 
 #include "base/token.hpp"
-#include "converter_interface.hpp"
+#include "lattice.hpp"
 
 
 namespace lime {

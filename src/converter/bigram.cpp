@@ -51,7 +51,15 @@ Cost Bigram::GetCost(const Token prev_token, const Token curr_token) const {
     = ngram_counts_.find(TokenString({curr_token}));
 
   if (prev_iter == ngram_counts_.end() || curr_iter == ngram_counts_.end()) {
-    throw runtime_error("GetCost");
+    ostringstream oss;
+    oss << "Bigram::GetCost: unknown token(s):";
+    if (prev_iter == ngram_counts_.end()) {
+      oss << " prev = " << prev_token;
+    }
+    if (curr_iter == ngram_counts_.end()) {
+      oss << ", curr = " << curr_token;
+    }
+    throw runtime_error(oss.str());
   }
 
   const double prob_unigram =
