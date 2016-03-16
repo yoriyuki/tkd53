@@ -25,8 +25,9 @@ int main(void) {
   shared_ptr<MapDictionary> dict(new MapDictionary());
   dict->Init(ifstream(kWordKkciMappingFile, ios::in));
 
-  Engine engine(shared_ptr<ConverterInterface>(
-      new BigramConverter(bigram, dict)));
+  Engine engine(shared_ptr<AbstractConverter>(
+      new BigramConverter(bigram,
+          shared_ptr<LatticeBuilder>(new LatticeBuilder(dict)))));
 
   string request_string;
   string response_string;

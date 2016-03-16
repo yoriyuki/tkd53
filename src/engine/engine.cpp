@@ -5,12 +5,12 @@
 namespace lime {
 namespace engine {
 
-Engine::Engine(shared_ptr<ConverterInterface> converter)
+Engine::Engine(shared_ptr<AbstractConverter> converter)
   : converter_(converter) {
 }
 
-void Engine::Convert(const KkciString &input, TokenString *output) {
-  converter_->Convert(input, output);
+void Engine::Convert(const KkciString &input, Segments *output) {
+  converter_->Convert(input, kBOS, kBOS, output);
 }
 
 } // converter

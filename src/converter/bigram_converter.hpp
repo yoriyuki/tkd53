@@ -3,8 +3,9 @@
 #include <memory>
 
 #include "dictionary/dictionary_interface.hpp"
-#include "converter_interface.hpp"
+#include "abstract_converter.hpp"
 #include "bigram.hpp"
+#include "lattice_builder.hpp"
 
 namespace lime {
 namespace converter {
@@ -14,21 +15,23 @@ using namespace lime::base::token;
 using namespace lime::dictionary;
 
 
-class BigramConverter : public ConverterInterface {
+class BigramConverter : public AbstractConverter {
 public:
   BigramConverter(shared_ptr<Bigram> bigram,
-                  shared_ptr<DictionaryInterface> dict);
+                  shared_ptr<LatticeBuilder> lattice_builder);
 
-  virtual void Convert(KkciString &input, Segments *output) override;
+  virtual void Convert(const KkciString &string,
+                       Token begin_token,
+                       Token end_token,
+                       Segments *result) override;
 
 private:
-  void FindBestNode(const Token token,
-                    const vector<Node> &left_nodes,
-                    const Node** node,
-                    Cost* cost);
+  void SetBestLeftNode(vector<shared_ptr<Node> > &lnodes,
+                       shared_ptr<Node> rnode);
 
   shared_ptr<Bigram> bigram_;
-  shared_ptr<DictionaryInterface> dict_;
+
+  shared_ptr<LatticeBuilder> lattice_builder_;
 };
 
 } // converter

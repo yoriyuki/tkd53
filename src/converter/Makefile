@@ -3,7 +3,7 @@ TARGETS_DIR = ../../bin
 
 TESTS_INSTALL_DIR = ../../tests/bin/converter
 GTEST_OBJ_DIR = ${TESTS_INSTALL_DIR}/../gtest
-GTEST_DIR = ../testing/googletest/googletest
+GTEST_DIR = ../third_party/googletest/googletest
 GTEST_DEPS = ${GTEST_OBJ_DIR}/libgtest_main.a ${GTEST_OBJ_DIR}/libgtest.a
 
 CXX=g++
@@ -31,11 +31,11 @@ ${TARGETS_DIR}:
 ${TESTS_INSTALL_DIR}:
 	@mkdir -p $@
 
-%.o: %.cpp
-	$(CXX) -o $@ -c $< $(CXXFLAGS)
-
 %_test.o: %_test.cpp
 	$(CXX) -o $@ -c $< $(TEST_CXXFLAGS)
+
+%.o: %.cpp
+	$(CXX) -o $@ -c $< $(CXXFLAGS)
 
 ../base/%.o: ../base/%.cpp
 	$(CXX) -o $@ -c $< $(CXXFLAGS)
@@ -43,5 +43,5 @@ ${TESTS_INSTALL_DIR}:
 ${TESTS_INSTALL_DIR}/bigram_test:bigram_test.o bigram.o ${GTEST_DEPS}
 	$(CXX) -o $@ $^ -lpthread
 
-${TESTS_INSTALL_DIR}/bigram_converter_test:bigram_converter_test.o bigram_converter.o bigram.o ../dictionary/map_dictionary.o ${GTEST_DEPS}
+${TESTS_INSTALL_DIR}/bigram_converter_test:bigram_converter_test.o bigram_converter.o bigram.o ../dictionary/map_dictionary.o lattice.o lattice_builder.o ${GTEST_DEPS}
 	$(CXX) -o $@ $^ -lpthread
