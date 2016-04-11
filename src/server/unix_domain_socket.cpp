@@ -151,7 +151,7 @@ int main(void) {
 	server_addr.sun_family = AF_UNIX;
 	strcpy(server_addr.sun_path, "/tmp/lime_sock");
 
-  if (bind(server_socket,
+  if (::bind(server_socket,
            (struct sockaddr *) &server_addr,
            sizeof(server_addr)) < 0) {
     PerrorAndExit("bind() failed.");
@@ -182,4 +182,3 @@ int main(void) {
 
   return 0;
 }
-
